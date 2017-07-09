@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <pd:name>MainProcess_ConditionType.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="param" type="xsd:double"/>
+                    <xsd:element name="param1" type="xsd:double"/>
+                    <xsd:element name="Operations" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>131</pd:startX>
+    <pd:startY>126</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <xsl:choose>
+                <xsl:when test="$Start/root/Operations =&quot;Addition&quot;">
+                    <Result>
+                        <xsl:value-of select="$Addition/root/Result"/>
+                    </Result>
+                </xsl:when>
+                <xsl:when test="$Start/root/Operations =&quot;Division&quot;">
+                    <Result>
+                        <xsl:value-of select="$Division/root/Result"/>
+                    </Result>
+                </xsl:when>
+                <xsl:otherwise>
+                    <Result>
+                        <xsl:value-of select="$Subtraction/root/Result"/>
+                    </Result>
+                </xsl:otherwise>
+            </xsl:choose>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="Result" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>470</pd:endX>
+    <pd:endY>125</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1498865846196</pd:targetNamespace>
+    <pd:activity name="Addition">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>313</pd:x>
+        <pd:y>37</pd:y>
+        <config>
+            <processName>/Subprocess/Addition.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <Number1>
+                    <xsl:value-of select="$Start/root/param"/>
+                </Number1>
+                <Number2>
+                    <xsl:value-of select="$Start/root/param1"/>
+                </Number2>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Division">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>316</pd:x>
+        <pd:y>126</pd:y>
+        <config>
+            <processName>/Subprocess/Division.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <Number1>
+                    <xsl:value-of select="$Start/root/param"/>
+                </Number1>
+                <Number2>
+                    <xsl:value-of select="$Start/root/param1"/>
+                </Number2>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Subtraction">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>323</pd:x>
+        <pd:y>211</pd:y>
+        <config>
+            <processName>/Subprocess/Subtraction.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <Number1>
+                    <xsl:value-of select="$Start/root/param"/>
+                </Number1>
+                <Number2>
+                    <xsl:value-of select="$Start/root/param1"/>
+                </Number2>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Addition</pd:to>
+        <pd:xpathDescription>Addition</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/root/Operations = "Addition"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Division</pd:to>
+        <pd:xpathDescription>Division</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/root/Operations ="Division"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Subtraction</pd:to>
+        <pd:xpathDescription>Subtraction</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/root/Operations ="Subtraction"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Division</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Addition</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Subtraction</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
